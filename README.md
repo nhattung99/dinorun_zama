@@ -29,7 +29,7 @@ An encrypted and provably fair dodge racing experience, developed with Zama’s 
 1. **Clone the repository**
 ```bash
 git clone https://github.com/hoasine/cryptoracezama.git
-cd luckyracegameFHE
+cd cryptoracezama
 ```
 
 2. **Install dependencies**
