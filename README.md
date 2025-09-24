@@ -107,7 +107,7 @@ Sepolia: 0x561D05BbaE5a2D93791151D02393CcD26d9749a2 (CryptoRaceFHE_KMS_Final)
 
 ### Project Structure
 ```
-luckyracegameFHE/
+cryptoracezamaFHE/
 ├── contracts/                    # Smart contracts
 ├── frontend-fhe-race/           # React frontend
 ├── server/                      # Express API server
