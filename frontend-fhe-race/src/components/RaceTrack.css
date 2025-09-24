@@ -1,0 +1,120 @@
+.race-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.race-header {
+  text-align: center;
+}
+
+.race-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.race-subtitle {
+  opacity: 0.8;
+}
+
+.track {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 8px 10px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.lane {
+  position: relative;
+  height: 44px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.lane-meta {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+}
+
+.lane-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.lane-text {
+  font-weight: 600;
+}
+
+.car {
+  position: absolute;
+  left: 56px;
+  top: 6px;
+  height: 32px;
+  min-width: 48px;
+  border: 2px solid #4a90e2;
+  border-radius: 16px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.car-emoji {
+  font-size: 16px;
+}
+
+.car-run {
+  animation: carMove 4.5s ease-in-out forwards;
+}
+
+@keyframes carMove {
+  0% {
+    transform: translateX(0);
+  }
+  60% {
+    transform: translateX(calc(100% - 84px));
+  }
+  100% {
+    transform: translateX(calc(100% - 84px));
+  }
+}
+
+.race-cta {
+  display: flex;
+  justify-content: center;
+}
+
+.race-button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #4a90e2;
+  color: #fff;
+  font-weight: 700;
+}
+
+.race-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
