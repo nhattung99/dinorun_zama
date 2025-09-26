@@ -6,9 +6,7 @@ An encrypted and provably fair dodge racing experience, developed with Zama's FH
 
 **Play Now**: [https://frontend-fhe-race-5d4nrel3s-hoasines-projects.vercel.app/](https://frontend-fhe-race-5d4nrel3s-hoasines-projects.vercel.app/)
 
-- **Desktop**: Use arrow keys or WASD to control your racer
-- **Mobile**: Swipe up/down on the game track to dodge obstacles
-- **Wallet**: Connect MetaMask to start playing and earning rewards
+- Tutorial: Use arrow keys or WASD to control your racer
 
 ### 🔐 **Confidential Gameplay Model**
 - **On-Chain Encrypted State**: Player information (races, pending ETH, scores) is fully protected with encryption on the blockchain.
