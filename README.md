@@ -4,7 +4,7 @@ An encrypted and provably fair endless runner game (Dinosaur Game style), develo
 
 ## 🎮 Live Demo
 
-**Play Now**: [https://frontend-fhe-race-5d4nrel3s-hoasines-projects.vercel.app/](https://frontend-fhe-race-5d4nrel3s-hoasines-projects.vercel.app/)
+**Play Now**: [https://zamafhe-silk.vercel.app/](https://zamafhe-silk.vercel.app/)
 
 - Tutorial: Use arrow keys or WASD to control your racer
 
@@ -28,7 +28,7 @@ An encrypted and provably fair endless runner game (Dinosaur Game style), develo
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 20+
 - MetaMask wallet
 - Sepolia ETH for gas fees
 
@@ -36,14 +36,14 @@ An encrypted and provably fair endless runner game (Dinosaur Game style), develo
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/hoasine/cryptoracezama.git
-cd cryptoracezama
+git clone https://github.com/nhattung99/dinorun_zama.git
+cd zamafhe
 ```
 
 2. **Install dependencies**
 ```bash
 # Frontend
-cd frontend-fhe-race
+cd frontend-the-race
 npm install
 
 # Backend (optional)
@@ -66,7 +66,7 @@ REACT_APP_ETHERSCAN_API_KEY=your-etherscan-api-key
 4. **Start the application**
 ```bash
 # Frontend
-cd frontend-fhe-race
+cd frontend-the-race
 npm start
 
 # Backend (optional)
@@ -119,7 +119,7 @@ Sepolia: 0x561D05BbaE5a2D93791151D02393CcD26d9749a2 (CryptoDinoRun_KMS_Final)
 ```
 cryptoracezamaFHE/
 ├── contracts/                    # Smart contracts
-├── frontend-fhe-race/           # React frontend
+├── frontend-the-race/           # React frontend
 ├── server/                      # Express API server
 ├── deploy/                      # Deployment scripts
 ├── scripts/                     # Utility scripts
@@ -135,11 +135,11 @@ npx hardhat compile
 npx hardhat run deploy/06b_deploy_kms_final_js.js --network sepolia
 
 # Start frontend
-cd frontend-fhe-race
+cd frontend-the-race
 npm start
 
 # Build for production
-cd frontend-fhe-race
+cd frontend-the-race
 npm run build
 ```
 
