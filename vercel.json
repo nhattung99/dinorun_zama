@@ -1,15 +1,8 @@
 {
-  "version": 2,
   "buildCommand": "cd frontend-fhe-race && npm install && npm run build",
   "outputDirectory": "frontend-fhe-race/build",
   "installCommand": "npm install --prefix frontend-fhe-race",
-  "framework": null,
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/frontend-fhe-race/build/$1"
-    }
-  ],
+  "framework": "create-react-app",
   "headers": [
     {
       "source": "/(.*)",
