@@ -1,8 +1,15 @@
 {
+  "version": 2,
   "buildCommand": "cd frontend-fhe-race && npm install && npm run build",
   "outputDirectory": "frontend-fhe-race/build",
-  "framework": "create-react-app",
-  "installCommand": "cd frontend-fhe-race && npm install",
+  "installCommand": "npm install --prefix frontend-fhe-race",
+  "framework": null,
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/frontend-fhe-race/build/$1"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -14,8 +21,13 @@
         {
           "key": "Cross-Origin-Embedder-Policy",
           "value": "require-corp"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "cross-origin"
         }
       ]
     }
   ]
 }
+
