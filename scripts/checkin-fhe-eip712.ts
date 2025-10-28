@@ -26,7 +26,7 @@ async function main() {
   const provider = new ethers.JsonRpcProvider(rpc);
   const wallet = new ethers.Wallet(pk, provider);
   const user = await wallet.getAddress();
-  const artifact = await hre.artifacts.readArtifact("CryptoRaceFHE_Strict");
+  const artifact = await hre.artifacts.readArtifact("CryptoDinoRun_Strict");
   const iface = new ethers.Interface(artifact.abi);
   const contract = new ethers.Contract(contractAddress, artifact.abi, wallet);
 

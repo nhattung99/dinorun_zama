@@ -46,8 +46,8 @@ async function main() {
         // ✅ Test 3: Try to call contract with real proof
         console.log("\n🧪 Test 3: Calling contract with real FHE proof");
         
-        const CryptoRaceFHE_Simple = await ethers.getContractFactory("CryptoRaceFHE_Simple");
-        const luckyRaceFHE = CryptoRaceFHE_Simple.attach(contractAddress);
+        const CryptoDinoRun_Simple = await ethers.getContractFactory("CryptoDinoRun_Simple");
+        const luckyRaceFHE = CryptoDinoRun_Simple.attach(contractAddress);
         
         try {
           const tx = await luckyRaceFHE.buyGmTokens(handles[0], inputProof, { 

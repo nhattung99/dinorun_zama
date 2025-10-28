@@ -14,7 +14,7 @@ async function main() {
   console.log(`📡 Oracle Address: ${oracleAddress}`);
 
   // Get contract
-  const contract = await ethers.getContractAt("CryptoRaceFHE_Strict", CONTRACT_ADDRESS);
+  const contract = await ethers.getContractAt("CryptoDinoRun_Strict", CONTRACT_ADDRESS);
 
   // Get current attestor
   const currentAttestor = await contract.attestor();

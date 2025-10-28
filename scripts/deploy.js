@@ -1,7 +1,7 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-  console.log("🚀 Deploying CryptoRaceFHE_Simple...");
+  console.log("🚀 Deploying CryptoDinoRun_Simple...");
   
   // Get deployer account
   const [deployer] = await ethers.getSigners();
@@ -9,13 +9,13 @@ async function main() {
   console.log("💰 Account balance:", (await deployer.provider.getBalance(deployer.address)).toString());
 
   // Deploy the contract
-  const CryptoRaceFHE_Simple = await ethers.getContractFactory("CryptoRaceFHE_Simple");
-  const contract = await CryptoRaceFHE_Simple.deploy();
+  const CryptoDinoRun_Simple = await ethers.getContractFactory("CryptoDinoRun_Simple");
+  const contract = await CryptoDinoRun_Simple.deploy();
   
   await contract.waitForDeployment();
   
   const contractAddress = await contract.getAddress();
-  console.log("✅ CryptoRaceFHE_Simple deployed to:", contractAddress);
+  console.log("✅ CryptoDinoRun_Simple deployed to:", contractAddress);
   
   // Verify deployment
   console.log("🔍 Verifying deployment...");

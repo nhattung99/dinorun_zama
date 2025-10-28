@@ -1,5 +1,5 @@
 /*
- Script kiểm thử logic CryptoRaceFHE_Simple trên Sepolia
+ Script kiểm thử logic CryptoDinoRun_Simple trên Sepolia
  Chạy:
    npx hardhat run scripts/test_logic.ts --network sepolia
 
@@ -11,7 +11,7 @@ import { ethers, network } from "hardhat";
 import fs from "fs";
 import path from "path";
 
-// Địa chỉ contract (fallback). Ưu tiên lấy từ deployments/sepolia/CryptoRaceFHE_Simple.json nếu có
+// Địa chỉ contract (fallback). Ưu tiên lấy từ deployments/sepolia/CryptoDinoRun_Simple.json nếu có
 const FALLBACK_CONTRACT_ADDRESS = "0x0A12d70f28d9fFE87f9D437B4ECdF530febB867a";
 
 // ABI tối thiểu cần dùng cho test
@@ -89,7 +89,7 @@ const ABI = [
 
 function loadDeployedAddress(): string {
   try {
-    const fp = path.join(__dirname, "../deployments/sepolia/CryptoRaceFHE_Simple.json");
+    const fp = path.join(__dirname, "../deployments/sepolia/CryptoDinoRun_Simple.json");
     if (fs.existsSync(fp)) {
       const json = JSON.parse(fs.readFileSync(fp, "utf-8"));
       if (json.address && typeof json.address === "string") return json.address;
@@ -99,7 +99,7 @@ function loadDeployedAddress(): string {
 }
 
 async function main() {
-  console.log("=== Test logic CryptoRaceFHE_Simple ===");
+  console.log("=== Test logic CryptoDinoRun_Simple ===");
   console.log("Network:", network.name);
 
   const [signer] = await ethers.getSigners();

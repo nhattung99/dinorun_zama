@@ -1,17 +1,17 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  console.log("🚀 Deploying CryptoRaceFHE_Strict to Sepolia Testnet...");
+  console.log("🚀 Deploying CryptoDinoRun_Strict to Sepolia Testnet...");
 
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with account:", deployer.address);
 
-  const Factory = await ethers.getContractFactory("CryptoRaceFHE_Strict");
+  const Factory = await ethers.getContractFactory("CryptoDinoRun_Strict");
   const contract = await Factory.deploy();
   await contract.waitForDeployment();
 
   const address = await contract.getAddress();
-  console.log(`✅ CryptoRaceFHE_Strict deployed to: ${address}`);
+  console.log(`✅ CryptoDinoRun_Strict deployed to: ${address}`);
 
   // Basic verification
   const code = await ethers.provider.getCode(address);

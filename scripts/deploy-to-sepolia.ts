@@ -3,11 +3,11 @@ import * as fs from "fs";
 import * as path from "path";
 
 async function main() {
-  console.log("🚀 Deploying CryptoRaceFHE_Complete to Sepolia Testnet...");
+  console.log("🚀 Deploying CryptoDinoRun_Complete to Sepolia Testnet...");
 
   // Deploy contract
-  const CryptoRaceFHE_CompleteFactory = await ethers.getContractFactory("CryptoRaceFHE_Complete");
-  const luckyRaceFHE = await CryptoRaceFHE_CompleteFactory.deploy();
+  const CryptoDinoRun_CompleteFactory = await ethers.getContractFactory("CryptoDinoRun_Complete");
+  const luckyRaceFHE = await CryptoDinoRun_CompleteFactory.deploy();
   await luckyRaceFHE.waitForDeployment();
 
   const contractAddress = await luckyRaceFHE.getAddress();

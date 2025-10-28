@@ -6,11 +6,11 @@ async function verifyContractStatus() {
   // Contract addresses to check
   const contracts = [
     {
-      name: "CryptoRaceFHE_Simple",
+      name: "CryptoDinoRun_Simple",
       address: "0xb3f5D86c5a7C6F8F58cd0629259e02f4FEb441F2"
     },
     {
-      name: "CryptoRaceFHE_ACL_Simple", 
+      name: "CryptoDinoRun_ACL_Simple", 
       address: "0xE334A43F3eb88eAf1CaeE6Fa64873feB94D7588A"
     }
   ];
@@ -33,12 +33,12 @@ async function verifyContractStatus() {
       // Try to get contract instance
       let contract;
       try {
-        if (contractInfo.name === "CryptoRaceFHE_Simple") {
-          const CryptoRaceFHE_Simple = await ethers.getContractFactory("CryptoRaceFHE_Simple");
-          contract = CryptoRaceFHE_Simple.attach(contractInfo.address);
-        } else if (contractInfo.name === "CryptoRaceFHE_ACL_Simple") {
-          const CryptoRaceFHE_ACL_Simple = await ethers.getContractFactory("CryptoRaceFHE_ACL_Simple");
-          contract = CryptoRaceFHE_ACL_Simple.attach(contractInfo.address);
+        if (contractInfo.name === "CryptoDinoRun_Simple") {
+          const CryptoDinoRun_Simple = await ethers.getContractFactory("CryptoDinoRun_Simple");
+          contract = CryptoDinoRun_Simple.attach(contractInfo.address);
+        } else if (contractInfo.name === "CryptoDinoRun_ACL_Simple") {
+          const CryptoDinoRun_ACL_Simple = await ethers.getContractFactory("CryptoDinoRun_ACL_Simple");
+          contract = CryptoDinoRun_ACL_Simple.attach(contractInfo.address);
         }
       } catch (error) {
         console.log("⚠️ Could not create contract instance:", error.message);

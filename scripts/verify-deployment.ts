@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  console.log("🔍 Verifying CryptoRaceFHE_Complete deployment...");
+  console.log("🔍 Verifying CryptoDinoRun_Complete deployment...");
 
   // Contract address from deployment
   const contractAddress = "0xa70DFA470B27d1Db1612E64c8Fb8c094FB3202E7";
@@ -19,8 +19,8 @@ async function main() {
     console.log("✅ Contract deployed successfully");
 
     // Get contract instance
-    const CryptoRaceFHE_Complete = await ethers.getContractFactory("CryptoRaceFHE_Complete");
-    const luckyRaceFHE = CryptoRaceFHE_Complete.attach(contractAddress);
+    const CryptoDinoRun_Complete = await ethers.getContractFactory("CryptoDinoRun_Complete");
+    const luckyRaceFHE = CryptoDinoRun_Complete.attach(contractAddress);
 
     // Test basic view functions
     console.log("\n📊 Testing View Functions...");

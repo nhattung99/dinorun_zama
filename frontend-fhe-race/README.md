@@ -36,7 +36,7 @@ npm start
 - Node.js 16+
 - MetaMask hoặc wallet tương thích
 - Sepolia testnet ETH
-- Contract CryptoRaceFHE_Complete.sol đã được deploy
+- Contract CryptoDinoRun_Complete.sol đã được deploy
 
 ## ⚙️ Cấu hình
 

@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Dino Run",
+  "name": "Crypto Dino Run - Zama FHE Game",
+  "description": "Jump to avoid obstacles! Blockchain game with confidential rewards",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +21,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#00ffff",
+  "background_color": "#0a0a0f"
 }

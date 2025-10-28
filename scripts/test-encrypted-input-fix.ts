@@ -8,8 +8,8 @@ async function main() {
   console.log(`🌐 Network: Sepolia Testnet`);
 
   try {
-    const CryptoRaceFHE_Simple = await ethers.getContractFactory("CryptoRaceFHE_Simple");
-    const luckyRaceFHE = CryptoRaceFHE_Simple.attach(contractAddress);
+    const CryptoDinoRun_Simple = await ethers.getContractFactory("CryptoDinoRun_Simple");
+    const luckyRaceFHE = CryptoDinoRun_Simple.attach(contractAddress);
 
     // ✅ Test 1: Check contract functions exist
     console.log("\n🧪 Test 1: Contract function validation");

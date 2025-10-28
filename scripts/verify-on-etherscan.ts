@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  console.log("🔍 Verifying CryptoRaceFHE_Simple on Etherscan...");
+  console.log("🔍 Verifying CryptoDinoRun_Simple on Etherscan...");
 
   const contractAddress = "0xb3f5D86c5a7C6F8F58cd0629259e02f4FEb441F2";
 
@@ -14,7 +14,7 @@ async function main() {
 
     await hre.run("verify:verify", {
       address: contractAddress,
-      contract: "contracts/CryptoRaceFHE_Simple.sol:CryptoRaceFHE_Simple",
+      contract: "contracts/CryptoDinoRun_Simple.sol:CryptoDinoRun_Simple",
       constructorArguments: [],
     });
 

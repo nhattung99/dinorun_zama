@@ -75,8 +75,8 @@ async function main() {
     // ✅ Test 4: Test with real contract
     console.log("\n🧪 Test 4: Real Contract Test");
     
-    const CryptoRaceFHE_Simple = await ethers.getContractFactory("CryptoRaceFHE_Simple");
-    const luckyRaceFHE = CryptoRaceFHE_Simple.attach(contractAddress);
+    const CryptoDinoRun_Simple = await ethers.getContractFactory("CryptoDinoRun_Simple");
+    const luckyRaceFHE = CryptoDinoRun_Simple.attach(contractAddress);
     
     const ethValue = ethers.parseEther("0.001");
     

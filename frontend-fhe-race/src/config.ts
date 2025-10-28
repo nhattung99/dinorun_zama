@@ -2,8 +2,8 @@ import { ethers } from "ethers";
 
 // ✅ Configuration sử dụng environment variables từ .env file (REACT_APP prefix)
 export const CONFIG = {
-  // ✅ FHEVM Contract Configuration - CryptoRaceFHE_Strict (Updated with 100% pool funding)
-  FHEVM_CONTRACT_ADDRESS: process.env.REACT_APP_FHEVM_CONTRACT_ADDRESS || "0x561D05BbaE5a2D93791151D02393CcD26d9749a2",
+  // ✅ FHEVM Contract Configuration - CryptoDinoRun_Strict (Updated with 100% pool funding)
+  FHEVM_CONTRACT_ADDRESS: process.env.REACT_APP_FHEVM_CONTRACT_ADDRESS || "0x689593567a9dc7Ac88025923BBbE3235127D9735",
 
   // ✅ Alternative contract addresses for testing
   ALTERNATIVE_CONTRACT_ADDRESSES: [],

@@ -1,17 +1,17 @@
 import { task } from "hardhat/config";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
-task("lucky-race:deploy", "Deploy CryptoRaceFHE contract")
+task("lucky-race:deploy", "Deploy CryptoDinoRun contract")
   .setAction(async (taskArgs, hre: HardhatRuntimeEnvironment) => {
     const { ethers } = hre;
     
-    console.log("Deploying CryptoRaceFHE contract...");
-    const CryptoRaceFHE = await ethers.getContractFactory("CryptoRaceFHE");
-    const luckyRaceFHE = await CryptoRaceFHE.deploy();
+    console.log("Deploying CryptoDinoRun contract...");
+    const CryptoDinoRun = await ethers.getContractFactory("CryptoDinoRun");
+    const luckyRaceFHE = await CryptoDinoRun.deploy();
     await luckyRaceFHE.waitForDeployment();
     
     const address = await luckyRaceFHE.getAddress();
-    console.log("CryptoRaceFHE deployed to:", address);
+    console.log("CryptoDinoRun deployed to:", address);
     
     return address;
   });
@@ -24,8 +24,8 @@ task("lucky-race:add-pool", "Add a new pool reward")
   .setAction(async (taskArgs, hre: HardhatRuntimeEnvironment) => {
     const { ethers } = hre;
     
-    const CryptoRaceFHE = await ethers.getContractFactory("CryptoRaceFHE");
-    const luckyRaceFHE = CryptoRaceFHE.attach(taskArgs.contract);
+    const CryptoDinoRun = await ethers.getContractFactory("CryptoDinoRun");
+    const luckyRaceFHE = CryptoDinoRun.attach(taskArgs.contract);
     
     console.log(`Adding pool: ${taskArgs.name}`);
     await luckyRaceFHE.addPool(taskArgs.name, taskArgs.image, taskArgs.value);
@@ -39,8 +39,8 @@ task("lucky-race:get-pools", "Get all pool rewards")
   .setAction(async (taskArgs, hre: HardhatRuntimeEnvironment) => {
     const { ethers } = hre;
     
-    const CryptoRaceFHE = await ethers.getContractFactory("CryptoRaceFHE");
-    const luckyRaceFHE = CryptoRaceFHE.attach(taskArgs.contract);
+    const CryptoDinoRun = await ethers.getContractFactory("CryptoDinoRun");
+    const luckyRaceFHE = CryptoDinoRun.attach(taskArgs.contract);
     
     const poolCount = await luckyRaceFHE.poolCount();
     console.log(`Total pools: ${poolCount}`);
@@ -58,8 +58,8 @@ task("lucky-race:submit-score", "Submit a public score to leaderboard")
   .setAction(async (taskArgs, hre: HardhatRuntimeEnvironment) => {
     const { ethers } = hre;
     
-    const CryptoRaceFHE = await ethers.getContractFactory("CryptoRaceFHE");
-    const luckyRaceFHE = CryptoRaceFHE.attach(taskArgs.contract);
+    const CryptoDinoRun = await ethers.getContractFactory("CryptoDinoRun");
+    const luckyRaceFHE = CryptoDinoRun.attach(taskArgs.contract);
     
     console.log(`Submitting score for ${taskArgs.user}: ${taskArgs.score}`);
     await luckyRaceFHE.submitPublicScore(taskArgs.user, taskArgs.score);
@@ -72,8 +72,8 @@ task("lucky-race:get-leaderboard", "Get leaderboard")
   .setAction(async (taskArgs, hre: HardhatRuntimeEnvironment) => {
     const { ethers } = hre;
     
-    const CryptoRaceFHE = await ethers.getContractFactory("CryptoRaceFHE");
-    const luckyRaceFHE = CryptoRaceFHE.attach(taskArgs.contract);
+    const CryptoDinoRun = await ethers.getContractFactory("CryptoDinoRun");
+    const luckyRaceFHE = CryptoDinoRun.attach(taskArgs.contract);
     
     const leaderboard = await luckyRaceFHE.getLeaderboard();
     console.log(`Leaderboard (${leaderboard.length} entries):`);
@@ -88,8 +88,8 @@ task("lucky-race:check-in", "Simulate user check-in (with mock encrypted data)")
   .setAction(async (taskArgs, hre: HardhatRuntimeEnvironment) => {
     const { ethers } = hre;
     
-    const CryptoRaceFHE = await ethers.getContractFactory("CryptoRaceFHE");
-    const luckyRaceFHE = CryptoRaceFHE.attach(taskArgs.contract);
+    const CryptoDinoRun = await ethers.getContractFactory("CryptoDinoRun");
+    const luckyRaceFHE = CryptoDinoRun.attach(taskArgs.contract);
     
     // Mock encrypted data for testing (32 bytes format)
     const encryptedRaces = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
@@ -106,8 +106,8 @@ task("lucky-race:race", "Simulate user race (with mock encrypted data)")
   .setAction(async (taskArgs, hre: HardhatRuntimeEnvironment) => {
     const { ethers } = hre;
     
-    const CryptoRaceFHE = await ethers.getContractFactory("CryptoRaceFHE");
-    const luckyRaceFHE = CryptoRaceFHE.attach(taskArgs.contract);
+    const CryptoDinoRun = await ethers.getContractFactory("CryptoDinoRun");
+    const luckyRaceFHE = CryptoDinoRun.attach(taskArgs.contract);
     
     // Mock encrypted data for testing (32 bytes format)
     const encryptedPoolIndex = "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
@@ -131,8 +131,8 @@ task("lucky-race:make-public", "Make user score public")
   .setAction(async (taskArgs, hre: HardhatRuntimeEnvironment) => {
     const { ethers } = hre;
     
-    const CryptoRaceFHE = await ethers.getContractFactory("CryptoRaceFHE");
-    const luckyRaceFHE = CryptoRaceFHE.attach(taskArgs.contract);
+    const CryptoDinoRun = await ethers.getContractFactory("CryptoDinoRun");
+    const luckyRaceFHE = CryptoDinoRun.attach(taskArgs.contract);
     
     console.log("Making score public...");
     await luckyRaceFHE.makeScorePublic();

@@ -12,8 +12,8 @@ async function testProofFormatFix() {
     console.log("🔑 Using signer:", signer.address);
 
     // Get contract
-    const CryptoRaceFHE_ACL_Simple = await ethers.getContractFactory("CryptoRaceFHE_ACL_Simple");
-    const contract = CryptoRaceFHE_ACL_Simple.attach(contractAddress);
+    const CryptoDinoRun_ACL_Simple = await ethers.getContractFactory("CryptoDinoRun_ACL_Simple");
+    const contract = CryptoDinoRun_ACL_Simple.attach(contractAddress);
     console.log("📋 Contract attached to:", contractAddress);
 
     // Test different proof formats

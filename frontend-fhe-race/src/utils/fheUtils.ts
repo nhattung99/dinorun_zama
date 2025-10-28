@@ -2,9 +2,9 @@ import { ethers } from "ethers";
 import { CONFIG } from "../config";
 import { signClaimAttestation } from "./eip712Signer";
 
-// ✅ CryptoRaceFHE_KMS_Final ABI - FHEVM compatible with KMS callback (Updated)
-import CryptoRaceFHE_KMS_Final_abi from "../abi/CryptoRaceFHE_KMS_Final.json";
-const CryptoRaceFHE_abi = CryptoRaceFHE_KMS_Final_abi.abi;
+// ✅ CryptoDinoRun_KMS_Final ABI - FHEVM compatible with KMS callback (Updated)
+import CryptoDinoRun_KMS_Final_abi from "../abi/CryptoDinoRun_KMS_Final.json";
+const CryptoDinoRun_abi = CryptoDinoRun_KMS_Final_abi.abi;
 /*
   {
     inputs: [{ internalType: "address", name: "user", type: "address" }],
@@ -409,7 +409,7 @@ export class FheUtils {
       throw new Error("FHEVM_CONTRACT_ADDRESS missing from CONFIG");
     }
 
-    this.contract = new ethers.Contract(contractAddress, CryptoRaceFHE_abi, signer);
+    this.contract = new ethers.Contract(contractAddress, CryptoDinoRun_abi, signer);
   }
 
   // ===== Helpers: cache keypair and EIP-712 user-decrypt authorization =====

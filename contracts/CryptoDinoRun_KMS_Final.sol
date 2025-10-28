@@ -6,7 +6,7 @@ import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
 // Strict FHE implementation: all sensitive state is encrypted.
 // Modified to use KMS callback for ETH claims instead of attestor
-contract CryptoRaceFHE_KMS_Final is SepoliaConfig {
+contract CryptoDinoRun_KMS_Final is SepoliaConfig {
     // Encrypted user state
     mapping(address => euint64) private userRaces;
     mapping(address => euint64) private userGm;

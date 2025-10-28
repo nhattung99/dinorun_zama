@@ -191,7 +191,7 @@ function buyGmTokens(externalEuint64 encryptedAmount, bytes calldata proof) exte
   console.log("  - Set environment variables");
   console.log("  - Configure networks correctly");
   
-  console.log("\n✅ Step 4: Update contracts/CryptoRaceFHE_Simple.sol");
+  console.log("\n✅ Step 4: Update contracts/CryptoDinoRun_Simple.sol");
   console.log("  - Ensure proper FHE.fromExternal usage");
   console.log("  - Add comprehensive validation");
   console.log("  - Implement proper error handling");
@@ -227,7 +227,7 @@ function buyGmTokens(externalEuint64 encryptedAmount, bytes calldata proof) exte
   console.log("✅ 1. frontend-fhe-race/src/hooks/useFheSdk.ts");
   console.log("✅ 2. frontend-fhe-race/src/App.tsx");
   console.log("✅ 3. hardhat.config.ts");
-  console.log("✅ 4. contracts/CryptoRaceFHE_Simple.sol");
+  console.log("✅ 4. contracts/CryptoDinoRun_Simple.sol");
   console.log("✅ 5. frontend-fhe-race/public/index.html");
 
   console.log("\n✅ All fixes identified and ready for implementation!");

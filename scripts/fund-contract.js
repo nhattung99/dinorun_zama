@@ -11,7 +11,7 @@ async function main() {
   console.log(`📡 Funding from: ${signer.address}`);
 
   // Get contract
-  const contract = await ethers.getContractAt("CryptoRaceFHE_Strict", CONTRACT_ADDRESS);
+  const contract = await ethers.getContractAt("CryptoDinoRun_Strict", CONTRACT_ADDRESS);
 
   // Check current balance
   const balance = await ethers.provider.getBalance(CONTRACT_ADDRESS);

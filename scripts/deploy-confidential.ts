@@ -2,7 +2,7 @@ import { ethers } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
 async function main() {
-  console.log("🚀 Deploying CryptoRaceFHE_Confidential to Sepolia...");
+  console.log("🚀 Deploying CryptoDinoRun_Confidential to Sepolia...");
   
   const [deployer] = await ethers.getSigners();
   
@@ -12,11 +12,11 @@ async function main() {
   console.log("- Balance:", ethers.formatEther(await deployer.provider.getBalance(deployer.address)), "ETH");
   
   // Get contract factory
-  const CryptoRaceFHEConfidential = await ethers.getContractFactory("CryptoRaceFHE_Confidential");
+  const CryptoDinoRunConfidential = await ethers.getContractFactory("CryptoDinoRun_Confidential");
   
   // Deploy with proper gas settings for FHEVM
   console.log("\n🔧 Deploying contract...");
-  const contract = await CryptoRaceFHEConfidential.deploy({
+  const contract = await CryptoDinoRunConfidential.deploy({
     gasLimit: 8000000,  // High gas limit for FHEVM initialization
     maxFeePerGas: ethers.parseUnits("50", "gwei"),
     maxPriorityFeePerGas: ethers.parseUnits("10", "gwei"),
@@ -77,7 +77,7 @@ async function main() {
   // Save deployment info
   const deploymentInfo = {
     network: "sepolia",
-    contractName: "CryptoRaceFHE_Confidential",
+    contractName: "CryptoDinoRun_Confidential",
     contractAddress: contractAddress,
     deployer: deployer.address,
     deploymentTransaction: contract.deploymentTransaction()?.hash,

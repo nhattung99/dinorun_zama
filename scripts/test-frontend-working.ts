@@ -10,8 +10,8 @@ async function main() {
 
   try {
     // Get contract instance
-    const CryptoRaceFHE_Simple = await ethers.getContractFactory("CryptoRaceFHE_Simple");
-    const luckyRaceFHE = CryptoRaceFHE_Simple.attach(contractAddress);
+    const CryptoDinoRun_Simple = await ethers.getContractFactory("CryptoDinoRun_Simple");
+    const luckyRaceFHE = CryptoDinoRun_Simple.attach(contractAddress);
 
     // Test all frontend-relevant functions
     console.log("\n📊 Testing Frontend Working Functions...");

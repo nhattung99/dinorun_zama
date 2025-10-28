@@ -1,10 +1,10 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  console.log("🚀 Deploying CryptoRaceFHE_ACL contract (Simple)...");
+  console.log("🚀 Deploying CryptoDinoRun_ACL contract (Simple)...");
 
   // Get the contract factory
-  const CryptoRaceFHE_ACL = await ethers.getContractFactory("CryptoRaceFHE_ACL_Simple");
+  const CryptoDinoRun_ACL = await ethers.getContractFactory("CryptoDinoRun_ACL_Simple");
 
   // For ACL, we need a host contract address
   // For now, we'll use a zero address as placeholder
@@ -15,7 +15,7 @@ async function main() {
   console.log(`   ACL Host Address: ${aclHostAddress}`);
 
   // Deploy the contract
-  const luckyRaceACL = await CryptoRaceFHE_ACL.deploy(aclHostAddress);
+  const luckyRaceACL = await CryptoDinoRun_ACL.deploy(aclHostAddress);
 
   // Wait for deployment
   await luckyRaceACL.waitForDeployment();

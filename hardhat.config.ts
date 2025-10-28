@@ -14,7 +14,7 @@ import * as dotenv from "dotenv";
 
 // import "./tasks/accounts";
 // import "./tasks/FHECounter";
-// import "./tasks/CryptoRaceFHE";
+// import "./tasks/CryptoDinoRun";
 // import { ZAMA_CONFIG, NETWORK_CONFIG, HARDHAT_CONFIG } from "./config/zama-config";
 
 // Load environment variables

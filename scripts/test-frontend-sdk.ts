@@ -14,8 +14,8 @@ async function main() {
     // ✅ Test 1: Check contract accessibility
     console.log("\n🧪 Test 1: Contract Accessibility");
     
-    const CryptoRaceFHE_Simple = await ethers.getContractFactory("CryptoRaceFHE_Simple");
-    const luckyRaceFHE = CryptoRaceFHE_Simple.attach(contractAddress);
+    const CryptoDinoRun_Simple = await ethers.getContractFactory("CryptoDinoRun_Simple");
+    const luckyRaceFHE = CryptoDinoRun_Simple.attach(contractAddress);
     
     const owner = await luckyRaceFHE.owner();
     console.log("✅ Owner:", owner);

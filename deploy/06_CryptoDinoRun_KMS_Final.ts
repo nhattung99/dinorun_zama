@@ -1,19 +1,19 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  console.log("🚀 Deploying CryptoRaceFHE_KMS_Final contract...");
+  console.log("🚀 Deploying CryptoDinoRun_KMS_Final contract...");
 
   const [deployer] = await ethers.getSigners();
   console.log("📋 Deploying with account:", deployer.address);
   console.log("💰 Account balance:", (await ethers.provider.getBalance(deployer.address)).toString());
 
   // Deploy contract
-  const CryptoRaceFHE_KMS_Final = await ethers.getContractFactory("CryptoRaceFHE_KMS_Final");
-  const contract = await CryptoRaceFHE_KMS_Final.deploy();
+  const CryptoDinoRun_KMS_Final = await ethers.getContractFactory("CryptoDinoRun_KMS_Final");
+  const contract = await CryptoDinoRun_KMS_Final.deploy();
   await contract.waitForDeployment();
 
   const contractAddress = await contract.getAddress();
-  console.log("✅ CryptoRaceFHE_KMS_Final deployed to:", contractAddress);
+  console.log("✅ CryptoDinoRun_KMS_Final deployed to:", contractAddress);
   console.log("🔗 Contract URL: https://sepolia.etherscan.io/address/" + contractAddress);
 
   // Verify contract

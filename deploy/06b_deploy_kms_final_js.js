@@ -4,11 +4,11 @@ async function main() {
   const [deployer] = await hre.ethers.getSigners();
   console.log("Deployer:", deployer.address);
 
-  const Factory = await hre.ethers.getContractFactory("CryptoRaceFHE_KMS_Final");
+  const Factory = await hre.ethers.getContractFactory("CryptoDinoRun_KMS_Final");
   const contract = await Factory.deploy();
   await contract.waitForDeployment();
   const address = await contract.getAddress();
-  console.log("CryptoRaceFHE_KMS_Final:", address);
+  console.log("CryptoDinoRun_KMS_Final:", address);
 
   const balance = await hre.ethers.provider.getBalance(address);
   console.log("Contract balance:", hre.ethers.formatEther(balance), "ETH");

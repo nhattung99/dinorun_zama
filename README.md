@@ -1,6 +1,6 @@
-# 🏁 Crypto Race Zama - Blockchain Game
+# 🦖 Crypto Dino Run - Blockchain Game
 
-An encrypted and provably fair dodge racing experience, developed with Zama's FHEVM, offering confidential rewards and secure gameplay on Ethereum.
+An encrypted and provably fair endless runner game (Dinosaur Game style), developed with Zama's FHEVM, offering confidential rewards and secure gameplay on Ethereum.
 
 ## 🎮 Live Demo
 
@@ -15,12 +15,14 @@ An encrypted and provably fair dodge racing experience, developed with Zama's FH
 - **Player-Controlled Decryption**: Users have full authority to decrypt and access their own data.
 
 ### 🎮 **How to Play**
-- **Dodge Race Gameplay**:
-  - Control your racer with arrow keys or WASD
-  - Dodge obstacles in 3 lanes for 15 seconds
-  - Score points by successfully avoiding obstacles
-  - Difficulty increases over time (faster obstacles, more frequent spawns)
-- **Race Rewards**: Score-based ETH rewards and daily leaderboard competitions
+- **Dino Run Gameplay** (inspired by Chrome Dinosaur Game):
+  - Press Space, Up Arrow, or W to jump
+  - **Avoid cactus on the ground** - jump to dodge them
+  - **Score increases continuously** as you run (distance-based)
+  - Stay on ground when cactus passes = HIT!
+  - Speed increases over time
+  - Game lasts 15 seconds with increasing difficulty
+- **Game Rewards**: Score-based ETH rewards and daily leaderboard competitions
 - **KMS Claim System**: Decentralized ETH claiming with Key Management Service
 
 ## 🚀 Quick Start
@@ -81,31 +83,33 @@ npm start
 
 ### 1. **Get Started**
 - Connect your MetaMask wallet
-- Perform daily check-in to receive free races
+- Buy plays from your wallet to start playing
 
-### 2. **Play the Dodge Race**
-- Click "Start Race" to begin the 15-second dodge game
-- Use arrow keys or WASD to move between 3 lanes
-- Dodge obstacles to score points (difficulty increases over time)
-- Your score determines your rewards
+### 2. **Play the Dino Run**
+- Click "🦖 Start Running" to begin the 15-second running game
+- Press Space, Up Arrow, or W to jump
+- **Jump to avoid cactus on the ground**
+- **Score increases automatically** as you run (distance-based scoring)
+- Stay on ground when cactus passes = HIT!
+- Speed and difficulty increase over time (faster cactus, more frequent spawns)
+- Your total score determines your rewards
 
-### 3. **Claim Rewards**
-- **ETH Rewards**: Use the "Claim ETH" button to withdraw to your wallet
-- **Leaderboard**: Publish your score to compete with others
+### 3. **Submit Score & Compete**
+- **Submit Total Score**: After playing multiple rounds, submit your accumulated score to the wallet
+- **Leaderboard**: Your published score appears on the leaderboard to compete with others
 
 ## 🔧 Smart Contracts
 
 ### Contract Addresses
 ```
-Sepolia: 0x561D05BbaE5a2D93791151D02393CcD26d9749a2 (CryptoRaceFHE_KMS_Final)
+Sepolia: 0x561D05BbaE5a2D93791151D02393CcD26d9749a2 (CryptoDinoRun_KMS_Final)
 ```
 
 ### Key Functions
-- `raceLite()` - Consume a race and compute outcome
-- `settlePrize(uint8 slot)` - Apply rewards based on race performance
-- `dailyGm()` - Daily check-in for free races
+- `publishScore(uint256 score)` - Submit your score to the blockchain
+- `dailyGm()` - Daily check-in for free plays
+- `buyGmTokensFHE()` - Buy GM tokens with ETH to purchase plays
 - `requestClaimETH(uint256 amountWei)` - Request ETH withdrawal
-- `getUserRaces(address user)` - Get encrypted race count
 - `getEncryptedPendingEthWei(address user)` - Get encrypted pending ETH
 - `getEncryptedScore(address user)` - Get encrypted score
 
@@ -160,4 +164,4 @@ npm run build
 - **Ethereum Foundation** - For the blockchain infrastructure
 - **MetaMask** - For wallet integration
 
-## Created by: [hoatranrom](https://x.com/HoaTranRom)
+## Created by: [nhattung99](https://x.com/nhattung99)

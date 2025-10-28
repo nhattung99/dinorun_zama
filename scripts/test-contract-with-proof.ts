@@ -11,8 +11,8 @@ async function main() {
     const [deployer] = await ethers.getSigners();
     console.log("🔑 Using account:", deployer.address);
 
-    const CryptoRaceFHE_Simple = await ethers.getContractFactory("CryptoRaceFHE_Simple");
-    const luckyRaceFHE = CryptoRaceFHE_Simple.attach(contractAddress);
+    const CryptoDinoRun_Simple = await ethers.getContractFactory("CryptoDinoRun_Simple");
+    const luckyRaceFHE = CryptoDinoRun_Simple.attach(contractAddress);
 
     // ✅ Test 1: Check contract state
     console.log("\n🧪 Test 1: Contract state validation");

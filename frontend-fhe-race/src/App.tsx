@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ethers } from "ethers";
 import "./App.css";
-import { DodgeRace } from "./components/DodgeRace";
+import { MarioJump } from "./components/MarioJump";
 import { Toast } from "./components/Toast";
 import NetworkWarning from "./components/NetworkWarning";
 import TypingButton from "./components/TypingButton";
@@ -55,6 +55,8 @@ const App: React.FC = () => {
   const udsigRequestedRef = useRef<boolean>(false);
   // Ensure trial race is only attempted once per device/account
   const trialGrantedRef = useRef<boolean>(false);
+  // Track if user manually disconnected (to prevent auto-reconnect)
+  const manuallyDisconnectedRef = useRef<boolean>(false);
 
   // Toasts must be declared once (here) before callbacks use push/update/remove
   const { toasts, push, update, remove } = useToast();
@@ -193,6 +195,9 @@ const App: React.FC = () => {
         return;
       }
 
+      // Clear manual disconnect flag when user explicitly connects
+      manuallyDisconnectedRef.current = false;
+
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
@@ -250,13 +255,30 @@ const App: React.FC = () => {
   }, [push]);
 
   const disconnectWallet = useCallback(() => {
+    // Set flag to prevent auto-reconnect
+    manuallyDisconnectedRef.current = true;
+    
+    // Reset all refs
+    udsigRequestedRef.current = false;
+    trialGrantedRef.current = false;
+    
+    // Clear connection state
     setConnected(false);
     setProvider(null);
     setSigner(null);
     setAccount("");
     setTxStatus("idle");
     setErrorMessage("");
-  }, [account, publishedScore]);
+    
+    // Clear any cached data
+    setAvailableRaces(0);
+    setGmBalance(0);
+    setPublishedScore(0);
+    setLeaderboard([]);
+    
+    // Show notification
+    push("info", "Wallet disconnected. You can now connect a different wallet.", 3000);
+  }, [push]);
 
   useEffect(() => {
     if (sdk && isReady && provider && signer) {
@@ -325,6 +347,12 @@ const App: React.FC = () => {
     let cancelled = false;
     (async () => {
       try {
+        // Don't auto-connect if user manually disconnected
+        if (manuallyDisconnectedRef.current) {
+          console.log("⏸️ Skipping auto-connect (user manually disconnected)");
+          return;
+        }
+        
         const browserProvider = new ethers.BrowserProvider(anyWindow.ethereum);
         const accounts: string[] = await anyWindow.ethereum.request({ method: "eth_accounts" });
         if (cancelled) return;
@@ -341,13 +369,21 @@ const App: React.FC = () => {
     })();
     const onAccounts = (accs: string[]) => {
       if (!accs || accs.length === 0) {
+        // User disconnected from MetaMask
         setConnected(false);
         setAccount("");
         setSigner(null);
         setProvider(null);
         return;
       }
-      // reload signer/provider
+      
+      // Don't auto-reconnect if user manually disconnected
+      if (manuallyDisconnectedRef.current) {
+        console.log("⏸️ Skipping account change (user manually disconnected)");
+        return;
+      }
+      
+      // reload signer/provider when account changes
       (async () => {
         try {
           const browserProvider = new ethers.BrowserProvider(anyWindow.ethereum);
@@ -357,6 +393,7 @@ const App: React.FC = () => {
           setAccount(accs[0]);
           setConnected(true);
           setSignerAndProvider(browserProvider, s);
+          push("info", "Switched to account: " + accs[0].slice(0, 6) + "..." + accs[0].slice(-4), 3000);
         } catch {}
       })();
     };
@@ -712,6 +749,45 @@ const App: React.FC = () => {
     }
   }, [requireReady, buyEthAmount, account, sdk, push, update, reloadUserState]);
 
+  // Test SDK connection and encryption
+  const testSDKConnection = useCallback(async () => {
+    try {
+      console.log("🧪 Testing SDK connection...");
+      
+      if (!sdk) {
+        push("error", "❌ SDK not loaded", 3000);
+        console.error("❌ SDK is null");
+        return;
+      }
+      
+      console.log("✅ SDK loaded");
+      console.log("🔍 SDK methods:", Object.keys(sdk).filter(k => typeof (sdk as any)[k] === 'function'));
+      
+      // Test createEncryptedInput
+      if (typeof (sdk as any).createEncryptedInput !== 'function') {
+        push("error", "❌ SDK missing createEncryptedInput method", 3000);
+        console.error("❌ createEncryptedInput not found");
+        return;
+      }
+      
+      console.log("✅ createEncryptedInput method exists");
+      
+      // Try creating a test builder (without encrypting)
+      try {
+        const testBuilder = (sdk as any).createEncryptedInput(CONFIG.FHEVM_CONTRACT_ADDRESS, account);
+        console.log("✅ Test builder created successfully");
+        push("success", "✅ SDK is working! You can proceed with purchase.", 3000);
+      } catch (e: any) {
+        console.error("❌ Failed to create builder:", e);
+        push("error", `❌ Builder creation failed: ${e.message}`, 4000);
+      }
+      
+    } catch (e: any) {
+      console.error("❌ SDK test failed:", e);
+      push("error", `❌ SDK test failed: ${e.message}`, 4000);
+    }
+  }, [sdk, account, push]);
+
   // Buy Plays function - Reusing handleBuyGmTokens logic
   const handleBuyPlays = useCallback(async () => {
     try {
@@ -732,7 +808,17 @@ const App: React.FC = () => {
       const toastId = push("pending", "💰 Preparing transaction...");
 
       // TỐI ƯU: Bỏ retry logic, chỉ thử 1 lần
-      if (!sdk) throw new Error("SDK not ready");
+      if (!sdk) {
+        console.error("❌ SDK not initialized");
+        throw new Error("SDK not ready");
+      }
+      
+      console.log("✅ SDK ready, starting encryption", {
+        account,
+        contractAddress: CONFIG.FHEVM_CONTRACT_ADDRESS,
+        gmAmount,
+        relayerUrl: CONFIG.RELAYER.URL
+      });
 
       // TỐI ƯU: Pre-encrypt để tăng tốc
       update(toastId, "pending", "🔐 Encrypting input...", 1000);
@@ -748,15 +834,30 @@ const App: React.FC = () => {
           encryptionAttempts++;
           console.log(`🔐 Encryption attempt ${encryptionAttempts}/${maxAttempts}`);
           
+          // Debug: Check SDK methods
+          console.log("🔍 SDK Debug:", {
+            hasCreateEncryptedInput: typeof (sdk as any).createEncryptedInput === 'function',
+            sdkKeys: Object.keys(sdk || {}).slice(0, 10)
+          });
+          
           // Add timeout to prevent hanging
           const encryptionPromise = (async () => {
+            console.log("📦 Creating encrypted input builder...");
             const builder = (sdk as any).createEncryptedInput(CONFIG.FHEVM_CONTRACT_ADDRESS, account);
+            console.log("📦 Builder created, adding value:", gmAmount);
             builder.add64(BigInt(gmAmount));
-            return await builder.encrypt();
+            console.log("📦 Starting encryption (this may take 30-60 seconds)...");
+            const result = await builder.encrypt();
+            console.log("📦 Encryption returned:", { 
+              hasHandles: !!result?.handles, 
+              handlesLength: result?.handles?.length,
+              hasProof: !!result?.inputProof 
+            });
+            return result;
           })();
           
           const timeoutPromise = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error("Encryption timeout after 30 seconds")), 30000)
+            setTimeout(() => reject(new Error("Encryption timeout after 60 seconds")), 60000)
           );
           
           const result = await Promise.race([encryptionPromise, timeoutPromise]) as any;
@@ -771,14 +872,22 @@ const App: React.FC = () => {
           break; // Success, exit loop
           
         } catch (encryptError: any) {
-          console.warn(`⚠️ Encryption attempt ${encryptionAttempts} failed:`, encryptError);
+          console.error(`❌ Encryption attempt ${encryptionAttempts} failed:`, {
+            message: encryptError?.message,
+            stack: encryptError?.stack,
+            error: encryptError
+          });
           
           if (encryptionAttempts >= maxAttempts) {
-            throw new Error(`Encryption failed after ${maxAttempts} attempts: ${encryptError?.message || encryptError}`);
+            const detailedError = `Encryption failed after ${maxAttempts} attempts. Error: ${encryptError?.message || String(encryptError)}. Please check: 1) Internet connection 2) Zama relayer status 3) Browser console for details`;
+            console.error("❌ Final error:", detailedError);
+            throw new Error(detailedError);
           }
           
           // Wait before retry with exponential backoff
-          await new Promise(resolve => setTimeout(resolve, 1000 * encryptionAttempts));
+          const waitTime = 1000 * encryptionAttempts;
+          console.log(`⏳ Waiting ${waitTime}ms before retry...`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
         }
       }
 
@@ -814,8 +923,11 @@ const App: React.FC = () => {
       setErrorMessage(errorMessage);
       
       // Provide specific guidance for relayer errors
-      if (errorMessage.includes("Relayer") || errorMessage.includes("encryption")) {
-        push("error", "🔧 Relayer issue detected. Please try again in a few moments.", 5000);
+      console.error("❌ Buy plays error:", e);
+      if (errorMessage.includes("Relayer") || errorMessage.includes("encryption") || errorMessage.includes("timeout")) {
+        push("error", "🔧 Relayer timeout. Check your connection and try again.", 5000);
+      } else if (errorMessage.includes("SDK not ready")) {
+        push("error", "⏳ Please wait for SDK to initialize and try again.", 4000);
       } else {
         push("error", e?.shortMessage || e?.message || "Buy plays failed", 4000);
       }
@@ -912,20 +1024,20 @@ const App: React.FC = () => {
     }
   }, [requireReady, account, push, update, reloadUserState]);
 
-  // Execute trial after handleDailyGm is available
-  useEffect(() => {
-    const key = tryGrantTrialRace();
-    if (key) {
-      (async () => {
-        try {
-          await handleDailyGm();
-          localStorage.setItem(key, "1");
-        } catch {
-          // ignore
-        }
-      })();
-    }
-  }, [tryGrantTrialRace, handleDailyGm]);
+  // Auto check-in removed - user must click Daily Check-in button manually
+  // useEffect(() => {
+  //   const key = tryGrantTrialRace();
+  //   if (key) {
+  //     (async () => {
+  //       try {
+  //         await handleDailyGm();
+  //         localStorage.setItem(key, "1");
+  //       } catch {
+  //         // ignore
+  //       }
+  //     })();
+  //   }
+  // }, [tryGrantTrialRace, handleDailyGm]);
 
   const handleRace = useCallback(async () => {
     try {
@@ -1137,60 +1249,78 @@ const App: React.FC = () => {
       )}
       <div className="header">
         <div className="header-content">
-          <div className="header-text">
-            <h1>🏁 Crypto Race Zama</h1>
-            <p>Secure, verifiable racing game with confidential rewards</p>
-            <p className="powered-by">Powered by Zama Team</p>
-           
-          </div>
-          <div className="wallet-connection-top">
-            {connected ? (
-              <div className="wallet-connected-row">
-                <div className="wallet-info">
-                  <span className={`status-indicator ${connected ? "connected" : "disconnected"}`}>
-                    {connected ? "💳" : "❌"}
-                  </span>
-                  <span className="status-text">Connected</span>
-                </div>
-                <div 
-                  className="wallet-address"
-                  onClick={() => setShowDisconnectPopup(!showDisconnectPopup)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {account.slice(0, 6)}...{account.slice(-4)}
-                </div>
-                {showDisconnectPopup && (
-                  <div className="disconnect-popup">
-                    <TypingButton 
-                      className="btn btn-danger btn-small" 
-                      onClick={() => {
-                        disconnectWallet();
-                        setShowDisconnectPopup(false);
-                      }}
-                      disabled={txStatus === "pending"}
-                      typingSpeed={30}
-                    >
-                      {txStatus === "pending" ? "⏳" : "Disconnect"}
-                    </TypingButton>
+          <div className="header-top-row">
+            <div className="header-text">
+              <h1>🦕 Crypto Dino Run</h1>
+              <p>Jump to avoid cactus! Secure gameplay with confidential rewards</p>
+              <p className="powered-by">Powered by Zama Team</p>
+            </div>
+            <div className="wallet-connection-top">
+              {connected ? (
+                <div className="wallet-connected-row">
+                  <div className="wallet-info">
+                    <span className={`status-indicator ${connected ? "connected" : "disconnected"}`}>
+                      {connected ? "💳" : "❌"}
+                    </span>
+                    <span className="status-text">Connected</span>
+                    {connected && (
+                      <span 
+                        className={`status-indicator ${sdk && isReady ? "connected" : "disconnected"}`}
+                        style={{ marginLeft: '8px', fontSize: '11px' }}
+                        title={sdk && isReady ? "SDK Ready" : "SDK Initializing..."}
+                      >
+                        {sdk && isReady ? "🔐" : "⏳"}
+                      </span>
+                    )}
                   </div>
-                )}
-              </div>
-            ) : (
-              <div className="wallet-disconnected">
-                <div className="wallet-status">
-                  <span className="status-indicator disconnected">❌</span>
-                  <span className="status-text">Not Connected</span>
+                  <div 
+                    className="wallet-address"
+                    onClick={() => setShowDisconnectPopup(!showDisconnectPopup)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {account.slice(0, 6)}...{account.slice(-4)}
+                  </div>
+                  {showDisconnectPopup && (
+                    <div className="disconnect-popup">
+                      <TypingButton 
+                        className="btn btn-danger btn-small" 
+                        onClick={() => {
+                          disconnectWallet();
+                          setShowDisconnectPopup(false);
+                        }}
+                        disabled={txStatus === "pending"}
+                        typingSpeed={30}
+                      >
+                        {txStatus === "pending" ? "⏳" : "Disconnect"}
+                      </TypingButton>
+                    </div>
+                  )}
                 </div>
-                <TypingButton 
-                  className="btn btn-primary btn-small" 
-                  onClick={connectWallet} 
-                  disabled={txStatus === "pending"}
-                  typingSpeed={30}
-                >
-                  {txStatus === "pending" ? "⏳" : "🔗 Connect"}
-                </TypingButton>
-              </div>
-            )}
+              ) : (
+                <div className="wallet-disconnected">
+                  <div className="wallet-status">
+                    <span className="status-indicator disconnected">❌</span>
+                    <span className="status-text">Not Connected</span>
+                  </div>
+                  <TypingButton 
+                    className="btn btn-primary btn-small" 
+                    onClick={connectWallet} 
+                    disabled={txStatus === "pending"}
+                    typingSpeed={30}
+                  >
+                    {txStatus === "pending" ? "⏳" : "🔗 Connect"}
+                  </TypingButton>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="header-credit">
+            <p>
+              Created by{" "}
+              <a href="https://x.com/nhattung99" target="_blank" rel="noreferrer">
+                @nhattung99
+              </a>
+            </p>
           </div>
         </div>
       </div>
@@ -1203,7 +1333,7 @@ const App: React.FC = () => {
 
           {/* Sync buttons removed for privacy-clean UI */}
 
-          <DodgeRace
+          <MarioJump
             canPlay={connected && isReady && txStatus !== "pending" && !userDataLoading && remainingTurns > 0}
             durationMs={15000}
             onComplete={async (finalScore) => {
@@ -1211,7 +1341,7 @@ const App: React.FC = () => {
                 // Accumulate the score
                 setTotalScore(prev => prev + finalScore);
                 setRaceResult(`Score: ${finalScore} | Total: ${totalScore + finalScore}`);
-                setRaceMessage("Race complete - Score added to total!");
+                setRaceMessage("Game complete - Score added to total!");
                 
                 // Reset score submitted flag for new accumulated score
                 setScoreSubmitted(false);
@@ -1237,55 +1367,73 @@ const App: React.FC = () => {
 
           {showRecentRace && (
             <div className="result-display show">
-              <div className="result-title">🎰 Race Result</div>
+              <div className="result-title">🎮 Game Result</div>
               <div className="result-prize">{raceResult}</div>
               <div className="result-message">{raceMessage}</div>
               {txStatus === "error" && <div style={{ color: "#f88" }}>{errorMessage}</div>}
             </div>
           )}
           
-          {/* Remaining Turns Display - Moved above Total Score */}
-          {remainingTurns > 0 && (
-            <div className="total-turns-display">
-              <div className="total-turns-title">🎮 Remaining Turns</div>
-              <div className="total-turns-value">{remainingTurns}</div>
-              <div className="total-turns-message">Turns left to play</div>
-            </div>
-          )}
-          
-          {/* Total Score Display - Hidden after successful submission */}
-          {totalScore > 0 && !scoreSubmitted && (
-            <div className="total-score-display">
-              <div className="total-score-title">🏆 Total Score</div>
-              <div className="total-score-value">{totalScore}</div>
-              <div className="total-score-message">Accumulated across all games</div>
-              <button 
-                className="btn"
-                onClick={async () => {
-                  try {
-                    requireReady();
-                    const tx = await (fheUtils as any).contract.publishScore(totalScore);
-                    await tx.wait();
-                    setRaceMessage("Total score submitted to wallet!");
-                    setScoreSubmitted(true); // Hide the total score display
-                    await reloadUserState(true, true);
-                    setTimeout(() => {
-                      try { loadLeaderboard(); } catch {}
-                    }, 800);
-                  } catch (error) {
-                    console.error("Error submitting total score:", error);
-                    setRaceMessage("Error submitting score");
-                  }
-                }}
-                disabled={txStatus === "pending"}
-              >
-                📢 Submit Total Score
-              </button>
+          {/* Combined Stats Panel - Remaining Turns + Total Score */}
+          {(remainingTurns > 0 || totalScore > 0) && (
+            <div className="stats-panel-unified">
+              <div className="stats-panel-header">
+                <div className="stats-panel-title"> Game Statistics</div>
+              </div>
+              
+              <div className="stats-grid">
+                {/* Remaining Turns */}
+                <div className="stat-item">
+                  <div className="stat-icon">🎮</div>
+                  <div className="stat-label">Remaining Turns</div>
+                  <div className="stat-value">{remainingTurns}</div>
+                </div>
+                
+                {/* Total Score */}
+                <div className="stat-item">
+                  <div className="stat-icon">🏆</div>
+                  <div className="stat-label">Total Score</div>
+                  <div className="stat-value">{totalScore}</div>
+                </div>
+              </div>
+              
+              {/* Submit Button - Only show if there's a score to submit */}
+              {totalScore > 0 && !scoreSubmitted && (
+                <button 
+                  className="btn btn-primary submit-score-btn"
+                  onClick={async () => {
+                    try {
+                      requireReady();
+                      const tx = await (fheUtils as any).contract.publishScore(totalScore);
+                      await tx.wait();
+                      setRaceMessage("Total score submitted to wallet!");
+                      setScoreSubmitted(true);
+                      await reloadUserState(true, true);
+                      setTimeout(() => {
+                        try { loadLeaderboard(); } catch {}
+                      }, 800);
+                    } catch (error) {
+                      console.error("Error submitting total score:", error);
+                      setRaceMessage("Error submitting score");
+                    }
+                  }}
+                  disabled={txStatus === "pending"}
+                >
+                  📢 Submit Total Score
+                </button>
+              )}
+              
+              {/* Score Submitted Message */}
+              {scoreSubmitted && (
+                <div className="score-submitted-message">
+                  ✅ Score submitted successfully!
+                </div>
+              )}
             </div>
           )}
           
           {/* No Turns Remaining Message */}
-          {remainingTurns === 0 && totalTurns > 0 && (
+          {remainingTurns === 0 && totalTurns > 0 && totalScore === 0 && (
             <div className="no-turns-display">
               <div className="no-turns-title">⏰ No Turns Left</div>
               <div className="no-turns-message">Buy more turns to continue playing</div>
@@ -1298,6 +1446,41 @@ const App: React.FC = () => {
 
       <div className="sidebar">
         {/* Your Balance section hidden */}
+
+    {/* Daily Check-in Button */}
+    <div style={{  textAlign: "center" }}>
+          <TypingButton
+            className="btn btn-success"
+            onClick={handleDailyGm}
+            disabled={!connected || !isReady || txStatus === "pending" || !canCheckin || isCheckinLoading}
+            typingSpeed={20}
+            title={
+              !canCheckin && !isCheckinLoading
+                ? `Already checked in today. Next reset: ${checkinCountdown || "calculating..."}`
+                : "Claim your free daily plays!"
+            }
+          >
+            {isCheckinLoading
+              ? "⏳ Loading..."
+              : canCheckin
+              ? "☀️ Daily Check-in (+3 Plays)"
+              : `✅ Checked In (Reset: ${checkinCountdown})`}
+          </TypingButton>
+        </div>
+
+     {/* Buy Plays Button - Moved under Leaderboard */}
+     <div style={{ textAlign: "center" }}>
+          <TypingButton
+            className="btn btn-primary"
+            onClick={() => setIsBuyPlaysOpen(true)}
+            disabled={!connected || !isReady || txStatus === "pending"}
+            typingSpeed={20}
+          >
+            💰 Buy Plays from Wallet
+          </TypingButton>
+        </div>
+
+
 
         <div className="card">
           <h3 style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -1357,17 +1540,9 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Buy Plays Button - Moved under Leaderboard */}
-        <div style={{ marginTop: 20, textAlign: "center" }}>
-          <TypingButton
-            className="btn btn-primary"
-            onClick={() => setIsBuyPlaysOpen(true)}
-            disabled={!connected || !isReady || txStatus === "pending"}
-            typingSpeed={20}
-          >
-            💰 Buy Plays from Wallet
-          </TypingButton>
-        </div>
+   
+
+
       </div>
 
       {isBuyRacesOpen && (
@@ -1537,6 +1712,33 @@ const App: React.FC = () => {
                     <span>Total Cost:</span>
                     <span className="confirmation-value">{playsAmount * playPrice} ETH</span>
                   </div>
+                  {!sdk || !isReady ? (
+                    <div style={{ 
+                      marginTop: '12px', 
+                      padding: '10px', 
+                      background: 'rgba(255,165,0,0.2)', 
+                      borderRadius: '6px',
+                      fontSize: '13px'
+                    }}>
+                      ⚠️ SDK Status: {!sdk ? "Loading..." : !isReady ? "Initializing..." : "Ready"}
+                      <br />
+                      <button 
+                        onClick={testSDKConnection}
+                        style={{
+                          marginTop: '8px',
+                          padding: '6px 12px',
+                          background: '#4CAF50',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        🧪 Test SDK Connection
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
                 <div className="modal-buttons">
                   <TypingButton
@@ -1550,10 +1752,14 @@ const App: React.FC = () => {
                   <TypingButton
                     className="btn btn-primary"
                     onClick={handleBuyPlays}
-                    disabled={!connected || !isReady || txStatus === "pending" || isBuyingPlays}
+                    disabled={!connected || !isReady || !sdk || txStatus === "pending" || isBuyingPlays}
                     typingSpeed={20}
                   >
-                    {isBuyingPlays || txStatus === "pending" ? "Processing..." : "Confirm Purchase"}
+                    {isBuyingPlays || txStatus === "pending" 
+                      ? "Processing..." 
+                      : !sdk 
+                        ? "⏳ Initializing SDK..." 
+                        : "Confirm Purchase"}
                   </TypingButton>
                 </div>
               </>
@@ -1572,18 +1778,12 @@ const App: React.FC = () => {
       )}
 
       <Toast toasts={toasts} onRemove={remove} />
-      
-      {/* Footer */}
-      <footer className="footer">
-        <p>
-          Created by{" "}
-          <a href="https://x.com/HoaTranRom" target="_blank" rel="noreferrer">
-            @HoaTranRom
-          </a>
-        </p>
-      </footer>
     </div>
   );
 };
 
 export default App;
+
+
+
+
