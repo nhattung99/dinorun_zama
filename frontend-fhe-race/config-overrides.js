@@ -5,6 +5,16 @@ module.exports = function override(config) {
   // Ensure resolve exists
   config.resolve = config.resolve || {};
 
+  // Add file extensions resolution
+  config.resolve.extensions = [
+    ...(config.resolve.extensions || []),
+    '.ts',
+    '.tsx',
+    '.js',
+    '.jsx',
+    '.json'
+  ];
+
   // Node polyfills for Webpack 5
   config.resolve.fallback = {
     ...(config.resolve.fallback || {}),
