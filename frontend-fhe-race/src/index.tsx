@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { Buffer } from 'buffer';
 
 // Polyfills for Node.js modules in browser
 (window as any).global = window;
